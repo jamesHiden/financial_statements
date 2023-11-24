@@ -33,7 +33,7 @@ def get_info(symbols):
             pass
         # change to ticker directory
         try:
-            ticker_dir = f'{main_dir}\{symbol}'
+            ticker_dir = f'{main_dir}/{symbol}'
             os.chdir(ticker_dir)
             dir_len0 = len(os.listdir(ticker_dir)) # get files count
             files_count_init.append(dir_len0)
@@ -84,7 +84,7 @@ def get_info(symbols):
                     os.chdir(main_dir)
                     # change to ticker directory
                     try:
-                        ticker_dir = f'{main_dir}\{ticker}'
+                        ticker_dir = f'{main_dir}/{ticker}'
                         os.chdir(ticker_dir)
                     except:
                         print(f'there is no {ticker_dir} directory')    
@@ -103,7 +103,7 @@ def get_info(symbols):
 
             # get files count
             for ticker in symbols:
-                ticker_dir = f'{main_dir}\{ticker}'
+                ticker_dir = f'{main_dir}/{ticker}'
                 dir_len1 = len(os.listdir(ticker_dir))
                 files_count_final.append(dir_len1)
             # number of new downloaded files 

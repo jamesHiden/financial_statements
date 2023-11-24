@@ -2,7 +2,7 @@ import os
 import re, jalali
 
 def rename_to_en(symbol):
-    path = f"C:/Users/new user/Downloads/{symbol}"
+    path = f"/home/jamal/Downloads/{symbol}"
     dirs = os.listdir(path)
 
     for file in dirs:

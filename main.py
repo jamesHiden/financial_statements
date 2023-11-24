@@ -8,14 +8,14 @@ from word2number import w2n
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-base_dir = os.path.dirname(os.path.abspath)
-symbols = ['فاراک', 'شپدیس', 'شتران', 'شپنا', 'شستا']
+base_dir = os.path.dirname(os.path.abspath(__file__))
+symbols = pd.read_csv(os.path.join(base_dir, 'high_market_cap.csv'))['ticker'][10:15]
+get_info(symbols)
 for symbol in symbols:
-    get_info(symbols)
     rename_to_en(symbol)
     dst_dir = os.path.join(base_dir,'csv_files', symbol)
 
-    file_dir = f"C:/Users/new user/Downloads/{symbol}"
+    file_dir = f"/home/jamal/Downloads/{symbol}"
     if not os.path.isdir(dst_dir):
         os.makedirs(dst_dir)
     dirs = os.listdir(file_dir)
@@ -30,13 +30,19 @@ for symbol in symbols:
         try:
             data = pd.read_html(f'{file_dir}/{file}')
             for df in data:
-                if 'جمع دارایی‌های جاری' in df.values or 'جمع دارايي‌هاي جاري' in df.values:
+                if 'جمع دارایی‌های جاری' in df.values or 'جمع دارايي‌هاي جاري' in df.values or 'جمع دارایی‌ها' in df.values or 'جمع دارايي‌ها' in df.values:
+                    if 1 in df.columns or '1' in df.columns:
+                        df.columns = data[j-1].columns
                     df.to_csv(f'{dst_dir}/{file}_bs.csv',index=False)
                     
-                elif 'نقد حاصل از عملیات' in df.values or 'نقد حاصل از عمليات' in df.values or 'جریان­‌های نقدی حاصل از فعالیت‌های تامین مالی' in df.values:
+                elif 'نقد حاصل از عملیات' in df.values or 'نقد حاصل از عمليات' in df.values or 'جریان­‌های نقدی حاصل از فعالیت‌های تامین مالی' in df.values or 'فعالیت‌های عملیاتی' in df.values:
+                    if 1 in df.columns or '1' in df.columns:
+                        df.columns = data[j-1].columns
                     df.to_csv(f'{dst_dir}/{file}_cf.csv',index=False)
                     
                 elif 'سود (زیان) پایه هر سهم' in df.values or 'سود (زيان) پايه هر سهم' in df.values or 'درآمد سود سهام' in df.values:
+                    if 1 in df.columns or '1' in df.columns:
+                        df.columns = data[j-1].columns
                     df.to_csv(f'{dst_dir}/{file}_is.csv',index=False)
 
         except:
@@ -60,26 +66,24 @@ for symbol in symbols:
             if '.csv' not in file:
                 continue
             data = pd.read_csv(f'{dst_dir}/{file}')
-            if type(data.columns) == tuple:
+            if type(data.columns[0]) == tuple:
                 col_names = []
                 [col_names.append(data.columns[i][0]) for i in range(len(data.columns))]
                 data.columns = col_names
                 
             if True not in ['/' in data.columns[i] for i in range(len(data.columns))]:
                 data.columns = data.loc[0]
-                data.rename(columns={data.columns[0]:'شرح'},inplace=True)
                 
-            data.drop(0,axis=0,inplace=True)
+            data.rename(columns={data.columns[0]:'شرح'},inplace=True)
+            data.fillna('0', inplace=True)
+            data = data[~data[data.columns[1]].str.contains("ح|ی|س|م|د|ت|/")]
             data.reset_index(drop=True, inplace=True)
             if file[-6:]=='bs.csv':
                 if len(data.columns)>5:
                     try:
-                        if 'درصد  تغییرات' in data.columns:
-                            data1 = data.loc[0:,'شرح':'درصد  تغییرات']
-                        elif 'درصد تغییرات' in data.columns:
-                            data1 = data.loc[0:,'شرح':'درصد تغییرات']
-                        data1 = data1[data1['شرح'].notna()]
-                        data2 = data.loc[0:,'شرح.1':]
+                        data1 = data.loc[0:,'شرح':data.columns[len(data.columns)/2-1]]
+                        data1 = data1[~data1['شرح'].str.contains('0')]
+                        data2 = data.loc[0:,data.columns[len(data.columns)/2]:]
                         data2.columns = data1.columns
                         x = pd.concat([data1, data2]).reset_index(drop=True)
                         bs_to_en(x).to_csv(f"{bs_path}/{file[:-11]}.csv", index=False)
@@ -92,14 +96,14 @@ for symbol in symbols:
                         bs_to_en(data).to_csv(f"{bs_path}/{file[:-11]}.csv", index=False)
                         os.remove(f'{dst_dir}/{file}')
                     except:
-                        print('We could not extract Cash Flow from this file: ',file)
+                        print('We could not extract Balance Sheet from this file: ',file)
                         
             elif file[-6:]=='cf.csv':
                 try:
                     cf_to_en(data).to_csv(f"{cf_path}/{file[:-11]}.csv", index=False)
                     os.remove(f'{dst_dir}/{file}')
                 except:
-                    print(file)
+                    print('We could not extract Cash Flow from this file: ',file)
                     
             elif file[-6:]=='is.csv':
                 try:
