@@ -15,6 +15,27 @@ import requests
 
 SEARCH_URL = "https://search.codal.ir/api/search/v2/q"
 
+# Codal's API hangs (no response, no error) on requests that don't look like
+# they came from a browser - plain `requests` with its default User-Agent
+# gets silently stalled. Mimic the headers the real codal.ir site sends.
+DEFAULT_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9,fa;q=0.8",
+    "Referer": "https://codal.ir/",
+    "Origin": "https://codal.ir",
+}
+
+
+def new_session() -> requests.Session:
+    """A requests Session pre-configured with browser-like headers."""
+    session = requests.Session()
+    session.headers.update(DEFAULT_HEADERS)
+    return session
+
 # Isic=571919 + Category=1 mirrors the filter the original script used to
 # scope results to periodic financial statements.
 SEARCH_PARAMS = {
@@ -58,7 +79,7 @@ def _parse_title_flags(title: str) -> tuple[bool, bool, bool]:
 
 def search_filings(symbol: str, session: requests.Session | None = None) -> list[FilingMeta]:
     """Return all periodic-statement filings Codal has for a ticker symbol."""
-    session = session or requests.Session()
+    session = session or new_session()
     filings: list[FilingMeta] = []
 
     page = 1
@@ -96,7 +117,7 @@ def search_filings(symbol: str, session: requests.Session | None = None) -> list
 
 def fetch_filing_content(url: str, session: requests.Session | None = None) -> bytes:
     """Download a filing's "Excel" export (actually an HTML table document)."""
-    session = session or requests.Session()
+    session = session or new_session()
     resp = session.get(url, timeout=30)
     resp.raise_for_status()
     return resp.content

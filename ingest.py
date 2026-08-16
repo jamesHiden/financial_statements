@@ -84,7 +84,7 @@ def main() -> None:
 
     print(f"Ingesting {len(symbols)} companies...")
     unmapped_labels: set[tuple[str, str]] = set()
-    http = requests.Session()
+    http = codal_client.new_session()
 
     for symbol in symbols:
         with db.get_session() as session:
