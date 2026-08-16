@@ -38,6 +38,22 @@ CREATE TABLE statement_line_items (
     UNIQUE (filing_id, label_fa)
 );
 
+-- Global-standard view of each filing: the same fixed set of line items
+-- (Revenue, Net Income, Total Assets, Cash from Operations, ...) for every
+-- company, computed from statement_line_items via standard_items.py's
+-- canonical_key -> standard_key mapping. This is what the site's compare /
+-- visualization views should read from.
+CREATE TABLE standard_line_items (
+    id SERIAL PRIMARY KEY,
+    filing_id INTEGER NOT NULL REFERENCES filings(id) ON DELETE CASCADE,
+    standard_key TEXT NOT NULL,
+    value NUMERIC NOT NULL,
+    UNIQUE (filing_id, standard_key)
+);
+
+CREATE INDEX idx_standard_items_filing ON standard_line_items(filing_id);
+CREATE INDEX idx_standard_items_key ON standard_line_items(standard_key);
+
 -- Structured, editable replacement for the old giant if/elif translation chain.
 -- Seeded from line_items.py at ingest time; can also be hand-edited later for
 -- labels the automatic pass doesn't recognize.

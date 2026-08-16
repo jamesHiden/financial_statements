@@ -39,6 +39,8 @@ def ingest_symbol(session, symbol: str, http: requests.Session, unmapped_labels:
     print(f"  [{symbol}] {len(filings)} filings found")
 
     for meta in filings:
+        if not meta.excel_url:
+            continue  # this filing type (e.g. dividend schedule) has no tabular export
         try:
             content = codal_client.fetch_filing_content(meta.excel_url, session=http)
             statements = filing_parser.parse_filing(content)

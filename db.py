@@ -26,6 +26,7 @@ from sqlalchemy.orm import Session, declarative_base, relationship, sessionmaker
 
 from line_items import MAPS_BY_STATEMENT_TYPE
 from parser import ParsedStatement
+from standard_items import aggregate_standard_values
 
 load_dotenv()
 
@@ -91,6 +92,16 @@ class LineItemMapping(Base):
     label_fa = Column(String, primary_key=True)
     statement_type = Column(StatementTypeEnum, primary_key=True)
     canonical_key = Column(String, nullable=False)
+
+
+class StandardLineItem(Base):
+    __tablename__ = "standard_line_items"
+    __table_args__ = (UniqueConstraint("filing_id", "standard_key"),)
+
+    id = Column(Integer, primary_key=True)
+    filing_id = Column(Integer, ForeignKey("filings.id", ondelete="CASCADE"), nullable=False)
+    standard_key = Column(String, nullable=False)
+    value = Column(Numeric, nullable=False)
 
 
 _engine = None
@@ -173,15 +184,36 @@ def upsert_line_items(
     """rows: list of (label_fa, canonical_key, value)."""
     if not rows:
         return
+    # Some Codal tables repeat the same label (merged section headers, messy
+    # HTML); keep the last occurrence so one batch insert never targets the
+    # same (filing_id, label_fa) row twice - Postgres rejects that outright.
+    deduped = {label_fa: (canonical_key, value) for label_fa, canonical_key, value in rows}
     stmt = pg_insert(StatementLineItem).values(
         [
             {"filing_id": filing_id, "label_fa": label_fa, "canonical_key": canonical_key, "value": value}
-            for label_fa, canonical_key, value in rows
+            for label_fa, (canonical_key, value) in deduped.items()
         ]
     )
     stmt = stmt.on_conflict_do_update(
         index_elements=["filing_id", "label_fa"],
         set_={"canonical_key": stmt.excluded.canonical_key, "value": stmt.excluded.value},
+    )
+    session.execute(stmt)
+
+
+def upsert_standard_line_items(session: Session, filing_id: int, totals: dict[str, float]) -> None:
+    """totals: standard_key -> summed value, from standard_items.aggregate_standard_values."""
+    if not totals:
+        return
+    stmt = pg_insert(StandardLineItem).values(
+        [
+            {"filing_id": filing_id, "standard_key": standard_key, "value": value}
+            for standard_key, value in totals.items()
+        ]
+    )
+    stmt = stmt.on_conflict_do_update(
+        index_elements=["filing_id", "standard_key"],
+        set_={"value": stmt.excluded.value},
     )
     session.execute(stmt)
 
@@ -229,3 +261,9 @@ def store_parsed_statement(
             for row in statement.rows
         ]
         upsert_line_items(session, filing.id, rows)
+
+        standard_totals = aggregate_standard_values(
+            [(canonical_key, value) for _, canonical_key, value in rows],
+            statement.statement_type,
+        )
+        upsert_standard_line_items(session, filing.id, standard_totals)

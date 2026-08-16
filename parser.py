@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from io import BytesIO
+from io import StringIO
 
 import pandas as pd
 
@@ -70,7 +70,7 @@ def _period_columns(df: pd.DataFrame) -> dict[object, str]:
     for col in df.columns:
         match = _DATE_RE.search(str(col))
         if match:
-            mapping[col] = jalali.Persian(match.group()).gregorian_string()
+            mapping[col] = jalali.Persian(match.group()).gregorian_datetime().isoformat()
     return mapping
 
 
@@ -101,9 +101,21 @@ def _parse_table(df: pd.DataFrame, statement_type: str) -> ParsedStatement | Non
     return statement
 
 
+def _decode_html(content: bytes) -> str:
+    """Codal's newer filings are UTF-8; filings from before ~2018 are usually
+    windows-1256 (the legacy Persian/Arabic encoding old Office HTML exports
+    used). Try both before giving up and replacing bad bytes."""
+    for encoding in ("utf-8", "windows-1256", "windows-1252"):
+        try:
+            return content.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return content.decode("utf-8", errors="replace")
+
+
 def parse_filing(content: bytes) -> list[ParsedStatement]:
     """Parse every recognizable statement table out of a filing document."""
-    tables = pd.read_html(BytesIO(content))
+    tables = pd.read_html(StringIO(_decode_html(content)))
     statements: list[ParsedStatement] = []
     for raw_df in tables:
         statement_type = _classify(raw_df)
