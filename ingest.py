@@ -44,8 +44,12 @@ def ingest_symbol(session, symbol: str, http: requests.Session, unmapped_labels:
         try:
             content = codal_client.fetch_filing_content(meta.excel_url, session=http)
             statements = filing_parser.parse_filing(content)
-        except (requests.RequestException, ValueError) as exc:
-            print(f"    could not process '{meta.title}': {exc}", file=sys.stderr)
+        except (requests.RequestException, ValueError, IndexError, KeyError, UnicodeError) as exc:
+            # Codal's HTML is inconsistent enough across 15+ years of filings that
+            # pandas.read_html can fail in several different ways on any one
+            # malformed document. One bad filing should be logged and skipped,
+            # never take down the whole ingestion run.
+            print(f"    could not process '{meta.title}': {exc!r}", file=sys.stderr)
             continue
 
         for statement in statements:
@@ -89,8 +93,12 @@ def main() -> None:
     http = codal_client.new_session()
 
     for symbol in symbols:
-        with db.get_session() as session:
-            ingest_symbol(session, symbol, http, unmapped_labels)
+        try:
+            with db.get_session() as session:
+                ingest_symbol(session, symbol, http, unmapped_labels)
+        except Exception as exc:
+            # Never let one company's unexpected failure abort the whole batch.
+            print(f"  [{symbol}] unexpected error, skipping company: {exc!r}", file=sys.stderr)
 
     if unmapped_labels:
         print(f"\n{len(unmapped_labels)} unmapped labels encountered (stored with canonical_key=NULL):")

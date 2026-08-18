@@ -181,6 +181,7 @@ CASH_FLOW_STANDARD_MAP: dict[str, str] = {
     "net_increase_in_cash": "net_change_in_cash",
     "cash_beginning_balance": "cash_beginning_balance",
     "cash_ending_balance": "cash_ending_balance",
+    "other_financing_nci": "other_financing_activities",
 }
 
 INCOME_STATEMENT_STANDARD_MAP: dict[str, str] = {
@@ -206,6 +207,16 @@ INCOME_STATEMENT_STANDARD_MAP: dict[str, str] = {
     "net_profit": "net_income",
     "basic_eps": "eps_basic",
     "diluted_eps": "eps_diluted",
+    "share_of_associates_profit": "other_income_expense",
+    "share_of_joint_ventures_profit": "other_income_expense",
+    "payroll_expenses": "other_operating_expense",
+    "rent_expense": "other_operating_expense",
+    "depreciation_expense": "other_operating_expense",
+    # Deliberately NOT mapped (would double-count against net_profit/total_equity
+    # above, which are already the consolidated totals): minority_interest_net_income,
+    # net_income_attributable_parent, minority_interest_retained_earnings,
+    # retained_earnings_attributable_parent, profit_before_associates_share,
+    # attributable_to_header, attributable_to_parent_label, attributable_to_nci_label.
 }
 
 MAPS_BY_STATEMENT_TYPE: dict[str, dict[str, str]] = {
