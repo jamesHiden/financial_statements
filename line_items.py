@@ -202,6 +202,10 @@ CANONICAL_LABELS: dict[str, str] = {
     "rent_expense": "Rent Expense",
     "depreciation_expense": "Depreciation Expense",
     "other_financing_nci": "Cash Flows from Non-Controlling Interest Transactions",
+    "equity_attributable_parent": "Equity Attributable to Parent Company Owners",
+    "minority_interest_equity": "Non-Controlling Interest (Equity)",
+    "misc_equity_items": "Other Equity Items",
+    "misc_investing_transactions": "Other Investing Transactions (Subsidiary/Investment Disposals)",
 }
 
 BALANCE_SHEET_MAP: dict[str, str] = {
@@ -275,6 +279,61 @@ BALANCE_SHEET_MAP: dict[str, str] = {
     "ذخيره مزاياي پايان خدمت و تعهدات بازنشستگی کارکنان": "employee_retirement_reserve",
     "جمع بدهی های قبل از حقوق صاحبان سپرده های سرمایه گذاری": "total_liabilities_before_deposit_equity",
     "حقوق صاحبان سپرده‌های سرمایه‌گذاری": "deposit_holders_equity",
+    # --- Additional consolidated / spacing / bank variants found ingesting the full company list ---
+    "آثار معاملات با منافع فاقد حق کنترل": "misc_equity_items",
+    "آثار معاملات سهام خزانه شرکت فرعي": "misc_equity_items",
+    "اندوخته سرمایه ای": "misc_equity_items",
+    "اوراق بدهی و مشارکت": "longterm_financial_facilities",
+    "بدهي به بانكها و موسسات اعتباري غیر بانکی": "debt_to_banks",
+    "بدهی به بانک ها و سایر موسسات اعتباری": "debt_to_banks",
+    "بدهی های مرتبط با دارایی های غیر جاری نگهداری شده برای فروش": "liabilities_related_to_assets_held_for_sale",
+    "بدهی‌های ‌مرتبط ‌با دارایی‌های غیرجاری نگهداری‌‌شده برای ‌فروش": "liabilities_related_to_assets_held_for_sale",
+    "بدهی‌ها و حقوق مالکانه": "equity_and_liabilities",
+    "تسهیلات اعطایی به اشخاص": "loans_and_claims_nongovt_entities",
+    "تسهیلات اعطایی و مطالبات از اشخاص دولتی به غیر از بانک‌ها": "loans_and_claims_govt_entities",
+    "تسهیلات اعطایی و مطالبات از اشخاص غیردولتی به غیر از بانک‌ها": "loans_and_claims_nongovt_entities",
+    "تسهیلات مالی بلند مدت": "longterm_financial_facilities",
+    "تسهیلات مالی کوتاه مدت": "shortterm_financial_facilities",
+    "حساب ها و اسناد دریافتنی تجاری": "trade_and_other_receivables",
+    "حساب ها و اسناد پرداختنی تجاری": "trade_and_other_payables",
+    "حقوق مالکانه قابل انتساب به مالکان شرکت اصلي": "equity_attributable_parent",
+    "حقوق مالکانه قابل انتساب به مالکان شرکت اصلی": "equity_attributable_parent",
+    "حقوق مالکانه و بدهی‌ها:": "equity_and_liabilities",
+    "دارايي‌ها:": "assets",
+    "دارایی ها نامشهود": "intangible_assets",
+    "دارایی های غیرجاری نگهداری شده برای فروش": "assets_held_for_sale",
+    "دارایی‌های غیر جاری نگهداری شده برای فروش": "assets_held_for_sale",
+    "دارایی‌های غیرجاری نگهداری شده برای فروش": "assets_held_for_sale",
+    "ذخایر و سایر پرداختنی ها": "reserves_and_other_liabilities",
+    "ساير سرمايه‌گذاري‌هاي بلندمدت": "longterm_investments",
+    "سایر حساب های دریافتنی": "other_receivable_accounts",
+    "سایر حساب‌ها و اسناد دریافتنی": "other_receivable_accounts",
+    "سایر دریافتنی ها": "other_receivable_accounts",
+    "سایر دریافتنی‌ها و پیش‌پرداخت‌ها": "other_receivable_accounts",
+    "سایر سرمایه گذاری ها": "other_assets",
+    "سایر سرمایه‌گذاری‌های بلندمدت": "longterm_investments",
+    "سرقفلي": "intangible_assets",
+    "سرقفلی": "intangible_assets",
+    "سرمايه گذاري در شرکتهاي وابسته": "longterm_investments",
+    "سرمایه گذاری در شرکتهای وابسته": "longterm_investments",
+    "سرمایه گذاری در مشارکت های خاص": "longterm_investments",
+    "سرمایه گذاری‌های بلند مدت": "longterm_investments",
+    "سرمایه‌گذاری‌ در اوراق بهادار وسپرده های بانکی": "shortterm_investments",
+    "سرمایه‌گذاری‌ در مشارکت‌های خاص": "longterm_investments",
+    "سهام خزانه (شامل سهام شرکت در مالکيت شرکت‌هاي فرعي)": "treasury_shares",
+    "سهام خزانه (شامل سهام شرکت در مالکیت شرکت‌های فرعی)": "treasury_shares",
+    "سهام شرکت اصلی در مالکیت شرکت فرعی": "treasury_shares",
+    "سود انباشته": "retained_earnings",
+    "صرف (کسر) سهام خزانه": "misc_equity_items",
+    "مطالبات از بانک ها و موسسات اعتباري غیربانکی": "claims_from_banks",
+    "مطالبات از بانک‌های مرکزی": "claims_from_banks",
+    "مطالبات بلندمدت": "longterm_receivables",
+    "مطالبات دولت": "claims_from_government",
+    "منافع فاقد حق کنترل": "minority_interest_equity",
+    "منافع فاقد کنترل": "minority_interest_equity",
+    "پیش دریافت": "advances_received",
+    "پیش پرداخت ها": "orders_and_prepayments",
+    "پیش‌پرداخت‌ها": "orders_and_prepayments",
 }
 
 CASH_FLOW_MAP: dict[str, str] = {
@@ -345,6 +404,70 @@ CASH_FLOW_MAP: dict[str, str] = {
     "پرداخت‌های نقدی برای خرید شرکت‌های فرعی پس از کسر وجوه نقد تحصیل شده": "purchase_longterm_investments",
     "پرداخت‌های نقدی ناشی از تحصیل منافع فاقد حق کنترل": "other_financing_nci",
     "پرداخت‌های نقدی ناشی از خرید سهام خزانه توسط شرکت فرعی- سهم منافع فاقد حق کنترل": "purchase_treasury_shares",
+    # --- Additional consolidated / spacing / bank variants found ingesting the full company list ---
+    "تأثیر تغییرات نرخ ارز": "fx_rate_effect",
+    "تاثیر تغییرات نرخ ارز موجودی نقد": "fx_rate_effect",
+    "جریان خالص ورود (خروج) وجه نقد ناشی از فعالیت‌های عملیاتی- استثنایی": "net_cash_operating_extraordinary",
+    "جریان خالص ورود (خروج) وجه نقد ناشی از فعالیت‌های عملیاتی- عادی": "net_cash_operating_ordinary",
+    "جریان خالص ورود(خروج) نقد حاصل از فعالیت های سرمایه گذاری": "net_cash_investing",
+    "جریان خالص ورود(خروج) نقد قبل از فعالیت های تامین مالی": "net_cash_before_financing",
+    "جریان خالص ورود(خروج) نقد ناشی از فعالیت های تامین مالی": "net_cash_financing",
+    "جریان های نقدی حاصل از فعاليت‌هاي عملياتي:": "operating_activities_header",
+    "جریان های نقدی حاصل از فعالیت های تامین مالی": "financing_activities_header",
+    "جریان های نقدی حاصل از فعالیت های سرمایه گذاری": "investing_activities_header",
+    "جریان‌های نقدی حاصل از فعالیت‌های عملیاتی:": "operating_activities_header",
+    "خالص افزایش (کاهش ) در موجودی نقد": "net_increase_in_cash",
+    "دريافت‌هاي نقدي حاصل از افزايش سرمايه شرکت اصلي": "capital_contributions_received",
+    "دريافت‌هاي نقدي حاصل از افزايش سرمايه شرکت‌هاي فرعي- سهم منافع فاقد حق کنترل": "other_financing_nci",
+    "دريافت‌هاي نقدي حاصل از فروش ساير سرمايه‌گذاري‌هاي بلندمدت": "proceeds_sale_longterm_investments",
+    "دريافت‌هاي نقدي حاصل از فروش سرمايه‌گذاري در شرکت‌هاي وابسته و مشارکت هاي خاص": "proceeds_sale_longterm_investments",
+    "دريافت‌هاي نقدي حاصل از فروش شرکت‌هاي فرعي": "misc_investing_transactions",
+    "دريافت‌هاي نقدي ناشي از فروش سهام خزانه توسط شرکت فرعي- سهم منافع فاقد حق کنترل": "proceeds_sale_treasury_shares",
+    "دريافت‌هاي نقدي ناشي از واگذاري بخشي از شرکت فرعي (با حفظ کنترل)": "misc_investing_transactions",
+    "دریافت های نقدی بابت اصل اوراق خرید دین": "proceeds_sukuk",
+    "دریافت های نقدی حاصل از اتشار اوراق بهادار به استثنای سهام": "proceeds_sukuk",
+    "دریافت های نقدی حاصل از تسهیلات دریافتی از بانک مرکزی و سایر بانکها و موسسات اعتباری غیر بانکی": "proceeds_from_facilities",
+    "دریافت های نقدی حاصل از سایر تسهیلات دریافتی": "proceeds_from_facilities",
+    "دریافت های نقدی حاصل از سود سایر سرمایه گذاری های مرتبط با فعالیت های غیر بانکی": "other_investment_income_received",
+    "دریافت های نقدی حاصل از فروش دارایی های غیر جاری نگهداری شده برای فروش": "proceeds_sale_held_for_sale_assets",
+    "دریافت های نقدی حاصل از فروش دارایی های نا مشهود": "proceeds_sale_intangible_assets",
+    "دریافت های نقدی حاصل از واگذاری سرمایه گذاری های مرتبط با فعالیت های غیر بانکی": "misc_investing_transactions",
+    "دریافت هایی نقدی حاصل از سود سهام مرتبط با فعالیت های غیر بانکی": "dividend_income_received",
+    "دریافت‌های نقدی حاصل از افزايش سرمايه شرکت اصلی": "capital_contributions_received",
+    "دریافت‌های نقدی حاصل از افزايش سرمايه شرکت‌های فرعی- سهم منافع فاقد حق کنترل": "other_financing_nci",
+    "دریافت‌های نقدی حاصل از انتشار اوراق بدهی (صکوک، اجاره، مشارکت و ...)": "proceeds_sukuk",
+    "دریافت‌های نقدی حاصل از فروش سایر سرمايه‌گذاري‌هاي بلندمدت": "proceeds_sale_longterm_investments",
+    "دریافت‌های نقدی حاصل از فروش سرمایه‌گذاری در شرکت‌های وابسته": "proceeds_sale_longterm_investments",
+    "دریافت‌های نقدی حاصل از فروش سرمایه‌گذاری در شرکت‌های وابسته و مشارکت های خاص": "proceeds_sale_longterm_investments",
+    "دریافت‌های نقدی حاصل از فروش شرکت‌های فرعی": "misc_investing_transactions",
+    "دریافت‌های نقدی ناشی از استرداد تسهیلات اعطایی به دیگران": "repayment_loans_granted",
+    "دریافت‌های نقدی ناشی از سود تسهیلات اعطایی به دیگران": "interest_income_loans_granted",
+    "دریافت‌های نقدی ناشی از فروش سرمایه‌گذاری در شرکت‌های وابسته و مشارکت‌های خاص": "proceeds_sale_longterm_investments",
+    "دریافت‌های نقدی ناشی از فروش سهام خزانه توسط شرکت فرعی- سهم منافع فاقد حق کنترل": "proceeds_sale_treasury_shares",
+    "دریافت‌های نقدی ناشی از واگذاری بخشی از شرکت فرعی - با حفظ کنترل": "misc_investing_transactions",
+    "سود سهام دریافتی": "dividend_income_received",
+    "سود سهام پرداختی به سهامداران اقلیت": "dividends_paid",
+    "سود سهام پرداختی به سهامداران شرکت اصلی": "dividends_paid",
+    "مالیات بر درآمد": "income_tax_paid",
+    "وجوه حاصل از افزایش سرمایه شركت اصلی": "capital_contributions_received",
+    "وجوه حاصل از افزایش سرمایه شرکت‌های فرعی- سهم اقلیت": "other_financing_nci",
+    "وجوه دریافتی بابت فروش سایر سرمایه‌گذاری‌های بلندمدت": "proceeds_sale_longterm_investments",
+    "وجوه دریافتی بابت فروش سهام شرکت اصلی توسط شرکت های فرعی/ سهام خزانه": "proceeds_sale_treasury_shares",
+    "وجوه دریافتی جهت فروش شركت فرعی": "misc_investing_transactions",
+    "وجوه پرداختی بابت تحصیل سایر سرمایه‌گذاری‌های بلندمدت": "purchase_longterm_investments",
+    "وجوه پرداختی بابت تحصیل سهام شرکت اصلی توسط شرکت های فرعی/سهام خزانه": "purchase_treasury_shares",
+    "وجوه پرداختی جهت خرید شرکت فرعی پس از کسر وجوه نقد تحصیل‌شده": "purchase_longterm_investments",
+    "پرداخت های نقدی بابت اصل اوراق بهادار به استثنای سهام": "repayment_sukuk",
+    "پرداخت های نقدی بابت اصل تسهیلات دریافتی از بانک مرکزی و سایر بانکها و موسسات اعتباری غیر بانکی": "repayment_facilities_principal",
+    "پرداخت های نقدی بابت اصل سایر تسهیلات دریافتی": "repayment_facilities_principal",
+    "پرداخت های نقدی بابت سود اوراق بهادار به استثنای سهام": "interest_paid_sukuk",
+    "پرداخت های نقدی بابت سود تسهیلات دریافتی از بانک مرکزی و سایر بانکها و موسسات اعتباری غیر بانکی": "interest_paid_facilities",
+    "پرداخت های نقدی بابت سود سایر تسهیلات دریافتی": "interest_paid_facilities",
+    "پرداخت های نقدی برای تحصیل دارایی ثابت مشهود": "purchase_tangible_assets",
+    "پرداخت های نقدی برای تحصیل دارایی نا مشهود": "purchase_intangible_assets",
+    "پرداخت های نقدی برای تحصیل دارایی های غیر جاری نگهداری شده برای فروش": "misc_investing_transactions",
+    "پرداخت های نقدی برای تحصیل سرمایه گذاری های مرتبط با فعالیت غیر بانکی": "purchase_longterm_investments",
+    "پرداخت‌هاي نقدي براي خريد سهام خزانه توسط شرکت فرعي- سهم منافع فاقد حق کنترل": "purchase_treasury_shares",
 }
 
 INCOME_STATEMENT_MAP: dict[str, str] = {
@@ -438,6 +561,47 @@ INCOME_STATEMENT_MAP: dict[str, str] = {
     "هزینه استهلاک": "depreciation_expense",
     "هزینه کاهش ارزش دریافتنی ‏ها (هزینه استثنایی)": "impairment_receivables",
     "گردش حساب سود (زیان) انباشته تلفیقی": "retained_earnings_movement",
+    # --- Additional consolidated / spacing / bank variants found ingesting the full company list.
+    # Deliberately NOT included: insurance-specific vocabulary (حق بیمه, خسارت,
+    # ذخایر فنی, بیمه اتکایی, ...) and bank profit-sharing-deposit vocabulary
+    # (سهم سود سپرده‌گذاران, سود علی‌الحساب, ...) - those are different chart-of-
+    # accounts structures entirely and don't map onto this industrial-company
+    # template; they'd need their own standard template to show correctly rather
+    # than being force-fit here.
+    "اندوخته قانونی": "transfer_to_legal_reserve",
+    "تغییرات در سود (زیان) انباشته": "retained_earnings_movement",
+    "جمع تغییرات در سود (زیان) انباشته": "retained_earnings_movement",
+    "جمع درآمدها": "total_operating_revenues",
+    "جمع هزینه‌ها": "total_operating_expenses",
+    "سایر اندوخته ها": "transfer_to_other_reserves",
+    "سایر درآمدها و هزینه های عملیاتی": "other_nonoperating_income_expenses",
+    "سایر درآمدها و هزینه های غیر عملیاتی": "other_nonoperating_income_expenses",
+    "سایر هزینه‌های اجرایی": "other_expenses",
+    "سود (زیان) انباشته در ابتدای دوره تعدیل شده": "retained_earnings_beginning_adjusted",
+    "سود (زیان) انباشته در ابتدای سال": "retained_earnings_beginning",
+    "سود (زیان) انباشته در پایان دوره": "retained_earnings_ending",
+    "سود (زیان) تقلیل یافته هر سهم - عملیاتی": "diluted_eps_continuing_operating",
+    "سود (زیان) تقلیل یافته هر سهم - غیرعملیاتی": "diluted_eps_continuing_nonoperating",
+    "سود (زیان) تقلیل یافته هر سهم ناشی از عملیات در حال تداوم": "diluted_eps",
+    "سود (زیان) خالص قبل از كسر مالیات": "continuing_ops_profit_before_tax",
+    "سود (زیان) قبل از مالیات": "continuing_ops_profit_before_tax",
+    "سود (زیان) پایه هر سهم - عملیاتی": "basic_eps_continuing_operating",
+    "سود (زیان) پایه هر سهم - غیرعملیاتی": "basic_eps_continuing_nonoperating",
+    "سود (زیان) پایه هر سهم ناشی از عملیات در حال تداوم": "basic_eps",
+    "غیر عملیاتی (ریال)": "nonoperational_rial",
+    "مالیات": "income_tax",
+    "هزینه های اداری و عمومی": "sga_expenses",
+    "هزینه‌های کارکنان": "payroll_expenses",
+    "درآمد کارمزد": "other_operating_income",
+    "هزینه کارمزد": "other_operating_expenses",
+    "هزینه مطالبات مشکوک‌الوصول": "impairment_receivables",
+    "نتیجه مبادلات ارزی": "other_nonoperating_income_expenses",
+    "درآمد حاصل از سرمایه گذاری در سهام": "dividend_income",
+    "سود سپرده بانکی": "other_nonoperating_income_expenses",
+    "سود(زیان) حاصل از فروش سرمایه گذاری": "gain_loss_sale_investments",
+    "سود(زیان) تعدیل ذخیره کاهش ارزش سرمایه گذاریهای بلند مدت": "gain_loss_fv_change_securities",
+    "سود(زیان) تعدیل ذخیره کاهش ارزش سرمایه گذاریهای کوتاه مدت": "gain_loss_fv_change_securities",
+    "سود حاصل از سایر فعالیتها": "other_income",
 }
 
 MAPS_BY_STATEMENT_TYPE: dict[str, dict[str, str]] = {
@@ -446,7 +610,35 @@ MAPS_BY_STATEMENT_TYPE: dict[str, dict[str, str]] = {
     "income_statement": INCOME_STATEMENT_MAP,
 }
 
+# 15+ years of Codal filings spell the same line item many different ways:
+# Arabic vs. Persian letterforms (ي/ی, ك/ک), and three different ways of
+# joining compound words (plain space, ZWNJ "half-space", or run together).
+# Rather than hand-enumerate every combination in the maps above, normalize
+# both the dict keys and lookups the same way so those variants collapse
+# onto one entry.
+_YEH_KAF_TRANSLATION = str.maketrans({"ي": "ی", "ك": "ک", "ة": "ه"})
+_WHITESPACE_CHARS = str.maketrans({"‌": " ", "‏": " ", "ً": ""})
+
+
+def _normalize(text: str) -> str:
+    text = text.strip().translate(_YEH_KAF_TRANSLATION).translate(_WHITESPACE_CHARS)
+    return " ".join(text.split())
+
+
+def _build_normalized_index(mapping: dict[str, str]) -> dict[str, str]:
+    return {_normalize(label_fa): canonical_key for label_fa, canonical_key in mapping.items()}
+
+
+_NORMALIZED_INDEX: dict[str, dict[str, str]] = {
+    statement_type: _build_normalized_index(mapping)
+    for statement_type, mapping in MAPS_BY_STATEMENT_TYPE.items()
+}
+
 
 def canonical_key_for(label_fa: str, statement_type: str) -> str | None:
-    """Look up the canonical key for a Persian label within a statement type."""
-    return MAPS_BY_STATEMENT_TYPE[statement_type].get(label_fa.strip())
+    """Look up the canonical key for a Persian label within a statement type,
+    tolerant of Arabic/Persian letterform and spacing variants."""
+    exact = MAPS_BY_STATEMENT_TYPE[statement_type].get(label_fa.strip())
+    if exact is not None:
+        return exact
+    return _NORMALIZED_INDEX[statement_type].get(_normalize(label_fa))

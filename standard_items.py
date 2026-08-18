@@ -136,6 +136,7 @@ BALANCE_SHEET_STANDARD_MAP: dict[str, str] = {
     "deposit_holders_equity": "other_equity",
     "total_equity": "total_equity",
     "total_equity_and_liabilities": "total_liabilities_and_equity",
+    "misc_equity_items": "other_equity",
 }
 
 CASH_FLOW_STANDARD_MAP: dict[str, str] = {
@@ -182,6 +183,7 @@ CASH_FLOW_STANDARD_MAP: dict[str, str] = {
     "cash_beginning_balance": "cash_beginning_balance",
     "cash_ending_balance": "cash_ending_balance",
     "other_financing_nci": "other_financing_activities",
+    "misc_investing_transactions": "other_investing_activities",
 }
 
 INCOME_STATEMENT_STANDARD_MAP: dict[str, str] = {
