@@ -24,6 +24,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session, declarative_base, relationship, sessionmaker
 
+import fx_rates
 from line_items import MAPS_BY_STATEMENT_TYPE
 from parser import ParsedStatement
 from standard_items import aggregate_standard_values
@@ -102,6 +103,13 @@ class StandardLineItem(Base):
     filing_id = Column(Integer, ForeignKey("filings.id", ondelete="CASCADE"), nullable=False)
     standard_key = Column(String, nullable=False)
     value = Column(Numeric, nullable=False)
+
+
+class UsdIrrRate(Base):
+    __tablename__ = "usd_irr_rates"
+
+    day = Column(Date, primary_key=True)
+    close_rial = Column(Numeric, nullable=False)
 
 
 _engine = None
@@ -214,6 +222,21 @@ def upsert_standard_line_items(session: Session, filing_id: int, totals: dict[st
     stmt = stmt.on_conflict_do_update(
         index_elements=["filing_id", "standard_key"],
         set_={"value": stmt.excluded.value},
+    )
+    session.execute(stmt)
+
+
+def upsert_fx_rates(session: Session, rates: list[fx_rates.DailyRate]) -> None:
+    """Bulk upsert the USD/IRR daily history. Cheap enough to just replace
+    the whole thing on every run rather than tracking incremental updates."""
+    if not rates:
+        return
+    stmt = pg_insert(UsdIrrRate).values(
+        [{"day": r.day, "close_rial": r.close_rial} for r in rates]
+    )
+    stmt = stmt.on_conflict_do_update(
+        index_elements=["day"],
+        set_={"close_rial": stmt.excluded.close_rial},
     )
     session.execute(stmt)
 

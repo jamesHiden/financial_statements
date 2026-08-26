@@ -67,3 +67,11 @@ CREATE TABLE line_item_mapping (
 CREATE INDEX idx_filings_company ON filings(company_id);
 CREATE INDEX idx_line_items_filing ON statement_line_items(filing_id);
 CREATE INDEX idx_line_items_canonical ON statement_line_items(canonical_key);
+
+-- Daily USD/IRR free-market ("دلار آزاد") close, from tgju.org. Used to
+-- convert Rial figures to USD as of a filing's period_end_date, so
+-- comparisons across time aren't dominated by Iran's inflation.
+CREATE TABLE usd_irr_rates (
+    day DATE PRIMARY KEY,
+    close_rial NUMERIC NOT NULL
+);
