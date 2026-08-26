@@ -8,6 +8,7 @@ CREATE TABLE companies (
     symbol TEXT NOT NULL UNIQUE,           -- Persian ticker, e.g. 'فولاد'
     name_fa TEXT,
     industry TEXT,
+    tsetmc_ins_code TEXT,                  -- TSETMC instrument code, once matched
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -74,4 +75,30 @@ CREATE INDEX idx_line_items_canonical ON statement_line_items(canonical_key);
 CREATE TABLE usd_irr_rates (
     day DATE PRIMARY KEY,
     close_rial NUMERIC NOT NULL
+);
+
+-- Latest known TSETMC snapshot per company - one row per company, replaced
+-- on each fetch_market_data.py run (not a history table; realtime/history
+-- is out of scope for now).
+CREATE TABLE market_snapshots (
+    company_id INTEGER PRIMARY KEY REFERENCES companies(id) ON DELETE CASCADE,
+    last_price NUMERIC,
+    closing_price NUMERIC,
+    price_change_pct NUMERIC,
+    day_low NUMERIC,
+    day_high NUMERIC,
+    volume NUMERIC,
+    trade_value NUMERIC,
+    trade_count NUMERIC,
+    market_cap NUMERIC,
+    fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Headline market indices (شاخص کل / شاخص هم‌وزن), one row per index,
+-- replaced on each fetch.
+CREATE TABLE market_indices (
+    index_key TEXT PRIMARY KEY,            -- 'total' | 'equal_weight'
+    value NUMERIC NOT NULL,
+    change_pct NUMERIC,
+    fetched_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

@@ -44,6 +44,7 @@ class Company(Base):
     symbol = Column(String, nullable=False, unique=True)
     name_fa = Column(String)
     industry = Column(String)
+    tsetmc_ins_code = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     filings = relationship("Filing", back_populates="company")
@@ -112,6 +113,31 @@ class UsdIrrRate(Base):
     close_rial = Column(Numeric, nullable=False)
 
 
+class MarketSnapshot(Base):
+    __tablename__ = "market_snapshots"
+
+    company_id = Column(Integer, ForeignKey("companies.id", ondelete="CASCADE"), primary_key=True)
+    last_price = Column(Numeric)
+    closing_price = Column(Numeric)
+    price_change_pct = Column(Numeric)
+    day_low = Column(Numeric)
+    day_high = Column(Numeric)
+    volume = Column(Numeric)
+    trade_value = Column(Numeric)
+    trade_count = Column(Numeric)
+    market_cap = Column(Numeric)
+    fetched_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class MarketIndex(Base):
+    __tablename__ = "market_indices"
+
+    index_key = Column(String, primary_key=True)
+    value = Column(Numeric, nullable=False)
+    change_pct = Column(Numeric)
+    fetched_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
 _engine = None
 _SessionLocal = None
 
@@ -148,6 +174,75 @@ def upsert_company(session: Session, symbol: str, name_fa: str | None = None) ->
     )
     company_id = session.execute(stmt).scalar_one()
     return session.get(Company, company_id)
+
+
+def set_tsetmc_ins_code(session: Session, company_id: int, ins_code: str) -> None:
+    session.execute(
+        Company.__table__.update().where(Company.id == company_id).values(tsetmc_ins_code=ins_code)
+    )
+
+
+def set_industry(session: Session, company_id: int, industry: str) -> None:
+    session.execute(
+        Company.__table__.update().where(Company.id == company_id).values(industry=industry)
+    )
+
+
+def upsert_market_snapshot(
+    session: Session,
+    company_id: int,
+    last_price: float | None,
+    closing_price: float | None,
+    price_change_pct: float | None,
+    day_low: float | None,
+    day_high: float | None,
+    volume: float | None,
+    trade_value: float | None,
+    trade_count: float | None,
+    market_cap: float | None,
+) -> None:
+    stmt = pg_insert(MarketSnapshot).values(
+        company_id=company_id,
+        last_price=last_price,
+        closing_price=closing_price,
+        price_change_pct=price_change_pct,
+        day_low=day_low,
+        day_high=day_high,
+        volume=volume,
+        trade_value=trade_value,
+        trade_count=trade_count,
+        market_cap=market_cap,
+        fetched_at=datetime.utcnow(),
+    )
+    stmt = stmt.on_conflict_do_update(
+        index_elements=["company_id"],
+        set_={
+            "last_price": stmt.excluded.last_price,
+            "closing_price": stmt.excluded.closing_price,
+            "price_change_pct": stmt.excluded.price_change_pct,
+            "day_low": stmt.excluded.day_low,
+            "day_high": stmt.excluded.day_high,
+            "volume": stmt.excluded.volume,
+            "trade_value": stmt.excluded.trade_value,
+            "trade_count": stmt.excluded.trade_count,
+            "market_cap": stmt.excluded.market_cap,
+            "fetched_at": stmt.excluded.fetched_at,
+        },
+    )
+    session.execute(stmt)
+
+
+def upsert_market_index(
+    session: Session, index_key: str, value: float, change_pct: float | None
+) -> None:
+    stmt = pg_insert(MarketIndex).values(
+        index_key=index_key, value=value, change_pct=change_pct, fetched_at=datetime.utcnow()
+    )
+    stmt = stmt.on_conflict_do_update(
+        index_elements=["index_key"],
+        set_={"value": stmt.excluded.value, "change_pct": stmt.excluded.change_pct, "fetched_at": stmt.excluded.fetched_at},
+    )
+    session.execute(stmt)
 
 
 def upsert_filing(
