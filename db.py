@@ -45,6 +45,8 @@ class Company(Base):
     name_fa = Column(String)
     industry = Column(String)
     tsetmc_ins_code = Column(String)
+    name_en = Column(String)
+    mnemonic_en = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     filings = relationship("Filing", back_populates="company")
@@ -185,6 +187,16 @@ def set_tsetmc_ins_code(session: Session, company_id: int, ins_code: str) -> Non
 def set_industry(session: Session, company_id: int, industry: str) -> None:
     session.execute(
         Company.__table__.update().where(Company.id == company_id).values(industry=industry)
+    )
+
+
+def set_english_identity(
+    session: Session, company_id: int, name_en: str | None, mnemonic_en: str | None
+) -> None:
+    session.execute(
+        Company.__table__.update()
+        .where(Company.id == company_id)
+        .values(name_en=name_en, mnemonic_en=mnemonic_en)
     )
 
 

@@ -44,6 +44,8 @@ def fetch_company_snapshot(session, http, company: db.Company) -> None:
         db.set_tsetmc_ins_code(session, company.id, ins_code)
     if identity.sector and identity.sector != company.industry:
         db.set_industry(session, company.id, identity.sector)
+    if identity.name_en and identity.name_en != company.name_en:
+        db.set_english_identity(session, company.id, identity.name_en, identity.mnemonic_en)
 
     market_cap = price.closing_price * shares_outstanding if shares_outstanding else None
 

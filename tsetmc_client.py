@@ -101,6 +101,8 @@ def get_closing_price_info(ins_code: str, session: requests.Session | None = Non
 class InstrumentIdentity:
     sector: str | None
     isin: str | None
+    name_en: str | None  # e.g. "Khalij Fars"
+    mnemonic_en: str | None  # e.g. "PKLJ1" - a Latin ticker-ish code
 
 
 def get_instrument_identity(ins_code: str, session: requests.Session | None = None) -> InstrumentIdentity:
@@ -110,6 +112,8 @@ def get_instrument_identity(ins_code: str, session: requests.Session | None = No
     d = resp.json()["instrumentIdentity"]
     return InstrumentIdentity(
         sector=(d.get("sector") or {}).get("lSecVal"),
+        name_en=d.get("lVal18"),
+        mnemonic_en=d.get("cValMne"),
         isin=d.get("cIsin"),
     )
 

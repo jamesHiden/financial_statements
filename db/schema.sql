@@ -9,6 +9,8 @@ CREATE TABLE companies (
     name_fa TEXT,
     industry TEXT,
     tsetmc_ins_code TEXT,                  -- TSETMC instrument code, once matched
+    name_en TEXT,                          -- e.g. 'Khalij Fars', from TSETMC
+    mnemonic_en TEXT,                      -- Latin ticker-ish code, e.g. 'PKLJ1', from TSETMC
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
